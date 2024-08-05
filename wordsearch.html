@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search Puzzle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+        td {
+            border: 1px solid #000;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        td.selected {
+            background-color: #b3d9ff;
+        }
+        .word-list {
+            margin-top: 20px;
+        }
+        .word-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .word-list li {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Search Puzzle</h1>
+    <table id="word-search-table">
+        <tr><td>H</td><td>E</td><td>L</td><td>L</td><td>O</td></tr>
+        <tr><td>T</td><td>W</td><td>O</td><td>R</td><td>L</td></tr>
+        <tr><td>R</td><td>D</td><td>E</td><td>S</td><td>F</td></tr>
+        <tr><td>Y</td><td>O</td><td>U</td><td>R</td><td>L</td></tr>
+        <tr><td>R</td><td>D</td><td>E</td><td>M</td><td>N</td></tr>
+    </table>
+    <div class="word-list">
+        <h2>Find the Words:</h2>
+        <ul>
+            <li>HELLO</li>
+            <li>WORLD</li>
+            <li>YOUR</li>
+            <li>DEMO</li>
+        </ul>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("word-search-table");
+            const words = ["HELLO", "WORLD", "YOUR", "DEMO"];
+            let selectedCells = [];
+
+            table.addEventListener("click", function(event) {
+                if (event.target.tagName === "TD") {
+                    event.target.classList.toggle("selected");
+                    const row = event.target.parentElement.rowIndex;
+                    const cell = event.target.cellIndex;
+                    const cellPosition = { row: row, cell: cell };
+                    
+                    const cellIndex = selectedCells.findIndex(
+                        c => c.row === cellPosition.row && c.cell === cellPosition.cell
+                    );
+
+                    if (cellIndex === -1) {
+                        selectedCells.push(cellPosition);
+                    } else {
+                        selectedCells.splice(cellIndex, 1);
+                    }
+
+                    checkWords();
+                }
+            });
+
+            function checkWords() {
+                const foundWords = words.filter(word => {
+                    return word.split("").every((letter, index) => {
+                        const position = selectedCells[index];
+                        return (
+                            position && 
+                            table.rows[position.row].cells[position.cell].textContent === letter
+                        );
+                    });
+                });
+
+                if (foundWords.length) {
+                    alert("Found words: " + foundWords.join(", "));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
